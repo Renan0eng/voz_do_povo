@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "voz_do_povo",
-    "slug": "voz_do_povo",
+    "name": "Voz do Povo",
+    "slug": "Voz do Povo",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo_g.svg",
     "scheme": "vozdopovo",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.VozdoPovo"
     },
     "web": {
       "output": "static",

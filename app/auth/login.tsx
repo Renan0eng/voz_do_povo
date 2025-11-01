@@ -1,11 +1,14 @@
 import { GenericInput } from '@/components/my-components/generic-input';
+import { Button } from '@/components/ui/button';
+import { useAlert } from '@/hooks/use-alert';
 import { useAuth } from '@/hooks/use-auth';
-import { Button, Text, View, VStack } from '@gluestack-ui/themed';
+import { View, VStack } from '@gluestack-ui/themed';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { Text } from 'react-native-gesture-handler';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -18,6 +21,7 @@ type FormData = z.infer<typeof schema>;
 export default function Login() {
     const router = useRouter();
     const { login } = useAuth();
+    const { showAlert } = useAlert()
     const { control, handleSubmit } = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -29,11 +33,12 @@ export default function Login() {
     const onSubmit = async (data: FormData) => {
         try {
             await login(data.email, data.password);
-            console.log('Login bem-sucedido');
-            router.replace('/home'); 
+            // console.log('Login bem-sucedido');
+            showAlert('Login bem-sucedido!', 'success');
+            router.replace('/home');
         } catch (error) {
-            console.error('Erro ao logar:', error);
-            alert('Login inválido');
+            // console.error('Erro ao logar:', error);
+            showAlert('Erro ao logar. Verifique suas credenciais e tente novamente.', 'error');
         }
     };
 
@@ -46,44 +51,47 @@ export default function Login() {
                     resizeMode="contain"
                 />
             </View>
+            <View className="flex flex-col gap-4">
+                <Controller
+                    control={control}
+                    name="email"
+                    render={({ field, fieldState }) => (
+                        <GenericInput
+                            label="Email"
+                            value={field.value}
+                            onChange={field.onChange} // Correto: react-hook-form controla a mudança
+                            placeholder="Digite seu email"
+                            type="text"
+                            // Passe a mensagem de erro diretamente
+                            error={fieldState.error?.message}
+                        />
+                    )}
+                />
 
-            <Controller
-                control={control}
-                name="email"
-                render={({ field, fieldState }) => (
-                    <GenericInput
-                        label="Email"
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder="Digite seu email"
-                        type="text"
-                        validate={() => fieldState.error?.message ?? null}
-                    />
-                )}
-            />
+                <Controller
+                    control={control}
+                    name="password"
+                    render={({ field, fieldState }) => (
+                        <GenericInput
+                            label="Senha"
+                            value={field.value}
+                            onChange={field.onChange}
+                            type="password"
+                            placeholder="Digite sua senha"
+                            // Passe a mensagem de erro diretamente
+                            error={fieldState.error?.message}
+                        />
+                    )}
+                />
+                <Button
+                    variant="solid" size="lg" action="primary"
+                    onPress={handleSubmit(onSubmit)}
+                    className="bg-blue-500 w-full"
+                >
+                    <Text className="text-white text-center text-xl font-bold">Entrar</Text>
+                </Button>
+            </View>
 
-            <Controller
-                control={control}
-                name="password"
-                render={({ field, fieldState }) => (
-                    <GenericInput
-                        label="Senha"
-                        value={field.value}
-                        onChange={field.onChange}
-                        type="password"
-                        placeholder="Digite sua senha"
-                        helperText="Deve ter pelo menos 6 caracteres."
-                        validate={() => fieldState.error?.message ?? null}
-                    />
-                )}
-            />
-
-            <Button
-                onPress={handleSubmit(onSubmit)}
-                className="bg-blue-500 rounded-full px-4 py-3 mt-4 w-full"
-            >
-                <Text className="text-white text-center text-2xl font-bold">Entrar</Text>
-            </Button>
         </VStack>
     );
 }

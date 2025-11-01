@@ -19,6 +19,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'text-error-800': 'rgb(var(--color-error-800)/<alpha-value>)',
+        'text-warning-800': 'rgb(var(--color-warning-800)/<alpha-value>)',
+        'text-success-800': 'rgb(var(--color-success-800)/<alpha-value>)',
+        'text-info-800': 'rgb(var(--color-info-800)/<alpha-value>)',
+        'text-background-800': 'rgb(var(--color-background-800)/<alpha-value>)',
+
+        'bg-background-error': 'rgb(var(--color-background-error)/<alpha-value>)',
+        'bg-background-warning': 'rgb(var(--color-background-warning)/<alpha-value>)',
+        'bg-background-success': 'rgb(var(--color-background-success)/<alpha-value>)',
+        'bg-background-info': 'rgb(var(--color-background-info)/<alpha-value>)',
+        'bg-background-muted': 'rgb(var(--color-background-muted)/<alpha-value>)',
         primary: {
           0: 'rgb(var(--color-primary-0)/<alpha-value>)',
           50: 'rgb(var(--color-primary-50)/<alpha-value>)',

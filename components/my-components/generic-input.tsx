@@ -1,4 +1,4 @@
-import { AlertCircleIcon, EyeIcon, EyeOffIcon, Input, InputField } from '@gluestack-ui/themed';
+import { EyeIcon, EyeOffIcon, Input, InputField } from '@gluestack-ui/themed';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
@@ -10,7 +10,8 @@ export interface GenericInputProps {
     type?: 'text' | 'password';
     isRequired?: boolean;
     helperText?: string;
-    validate?: (value: string) => string | null;
+    // A prop 'error' substitui a função 'validate'
+    error?: string | null;
 }
 
 export const GenericInput: React.FC<GenericInputProps> = ({
@@ -21,19 +22,13 @@ export const GenericInput: React.FC<GenericInputProps> = ({
     type = 'text',
     isRequired = false,
     helperText,
-    validate,
+    // Recebe a mensagem de erro como uma string
+    error,
 }) => {
-    const [error, setError] = React.useState<string | null>(null);
+    // O estado de visibilidade da senha continua aqui
     const [visible, setVisible] = React.useState(false);
 
-    const handleChange = (text: string) => {
-        onChange(text);
-        if (validate) {
-            const validationResult = validate(text);
-            setError(validationResult);
-        }
-    };
-
+    // Não precisamos mais do 'handleChange' customizado, pois não há validação interna
     const toggleVisibility = () => setVisible(!visible);
 
     return (
@@ -45,25 +40,27 @@ export const GenericInput: React.FC<GenericInputProps> = ({
             </Text>
 
             {/* Input */}
-            <Input className={`relative px-2 py-1 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-full`}>
+            {/* A borda agora depende da prop 'error' */}
+            <Input variant="underlined" className={`relative px-2 py-1 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-full`}>
                 <InputField
                     type={type === 'password' ? (visible ? 'text' : 'password') : type}
                     placeholder={placeholder}
                     value={value}
-                    onChangeText={handleChange}
-                    className="px-3 py-2 text-gray-900 pr-10" // pr-10 para dar espaço pro ícone
+                    // Passamos a função 'onChange' diretamente
+                    onChangeText={onChange}
+                    className="px-3 py-2 text-gray-900 pr-10"
                 />
 
                 {/* Ícone de visibilidade */}
                 {type === 'password' && (
                     <TouchableOpacity
                         onPress={toggleVisibility}
-                        className="absolute right-3 top-1/2 -translate-y-1/2"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 mt-1"
                     >
                         {visible ? (
-                            <EyeIcon height={20} width={20} />
+                            <EyeIcon height={24} width={24} />
                         ) : (
-                            <EyeOffIcon height={20} width={20} />
+                            <EyeOffIcon height={24} width={24} />
                         )}
                     </TouchableOpacity>
                 )}
@@ -73,9 +70,10 @@ export const GenericInput: React.FC<GenericInputProps> = ({
             {helperText && !error && <Text className="text-gray-400 text-sm mt-1">{helperText}</Text>}
 
             {/* Error Text */}
+            {/* O erro exibido agora vem diretamente da prop 'error' */}
             {error && (
-                <View className="flex flex-row items-center mt-1">
-                    <AlertCircleIcon className="text-red-500 mr-1" />
+                <View className="flex flex-row mt-1">
+                    {/* <AlertCircleIcon color="$red500" size="xs"/> */}
                     <Text className="text-red-500 text-sm">{error}</Text>
                 </View>
             )}
